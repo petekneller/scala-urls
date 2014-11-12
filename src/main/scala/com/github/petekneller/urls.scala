@@ -59,12 +59,17 @@ object urls {
       }
     }
 
+    def apply(scheme: String, authority: String, hierarchicalPart: String): Url = {
+      val path = Path.unapply(hierarchicalPart).getOrElse(List.empty)
+      val params = Query.unapply(hierarchicalPart).getOrElse(List.empty)
+      val fragment = Fragment.unapply(hierarchicalPart).getOrElse("")
+
+      Url(scheme, authority, path, params, fragment)
+    }
+
     def apply(url: String): Url = {
-        val (scheme, authority, rest) = unapply(url).getOrElse(("", "", ""))
-        val path = Path.unapply(rest).getOrElse(List.empty)
-        val params = Query.unapply(rest).getOrElse(List.empty)
-        val fragment = Fragment.unapply(rest).getOrElse("")
-        Url(scheme, authority, path, params, fragment)
+      val (scheme, authority, hierarchicalPart) = unapply(url).getOrElse(("", "", ""))
+      Url(scheme, authority, hierarchicalPart)
     }
   }
 
